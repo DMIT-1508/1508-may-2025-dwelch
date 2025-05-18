@@ -1,8 +1,6 @@
-# 2025 May - xxxxx
+# 2025 May - Class Demonstration Workbook
 
-> **Your Name Here**
+> **Don Welch**
 
-Alter xxxxx in the title to the use of this repository, such as Workbook. Put your name in this file. All work submitted
-for evaluations (labs, quizzes) must be submitted within a supplied repository. **DO NOT** place work for evaluation in 
-your course Workbook. 
+All items in this repository are public and usable by the students registered in the Nait session DMIT-1508 term 1243 section E03. 
 
