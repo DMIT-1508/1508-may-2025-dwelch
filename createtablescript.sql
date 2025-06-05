@@ -156,3 +156,19 @@ CREATE TABLE ItemsOnOrder (
 
 
 go
+
+-- INDEX
+--	indexes are use to improve the speed access to records within a table
+-- if you drop your table, the index is destroyed
+-- indexes can be dropped DROP INDEX index-name
+
+-- typically foreign key attrubutes will have a non-clustered index
+-- you may have an index on a non foreign key field 
+-- the default order of an index is asc (so asc is optionally in the declaration)
+
+CREATE nonclustered INDEX IX_Customers_Phone ON Customers (Phone asc)
+CREATE nonclustered INDEX IX_Orders_CustomerNumber ON Orders (CustomerNumber)
+CREATE nonclustered INDEX IX_ItemsOnOrder_OrderNumber ON ItemsOnOrder (OrderNumber)
+CREATE nonclustered INDEX IX_ItemsOnOrder_ItemNumber ON ItemsOnOrder (ItemNumber)
+
+go
