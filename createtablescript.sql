@@ -34,7 +34,7 @@
 
 DROP TABLE ItemsOnOrder -- child table to Items
 DROP TABLE Items
-DROP TABLE Orders -- chilc table to Customers
+DROP TABLE Orders -- child table to Customers
 DROP TABLE Customers
 go
 
@@ -73,11 +73,15 @@ go
 -- b) the attribute datatype (an exact number of 12 characters, xxx-xxx-xxxx)
 -- c) state if a value is required (not null) or can be empty (null). NOTE; default is not null.
 
+-- LastName and FirstName must have at least one character
+
 CREATE TABLE Customers (
 	CustomerNumber int IDENTITY(1, 1) not null
 		CONSTRAINT PK_Customers_CustomerNumber primary key clustered,
-	LastName       varchar(100) not null, 
-	FirstName       varchar(100) not null, 
+	LastName       varchar(100) not null
+		CONSTRAINT CK_Customers_LastName CHECK (LastName like '[a-zA-Z]%'), 
+	FirstName       varchar(100) not null
+		CONSTRAINT CK_Customers_FirstName CHECK (FirstName like '[a-zA-Z]%'), 
 	Phone			char(12) null
 )
 
@@ -86,16 +90,26 @@ CREATE TABLE Customers (
 -- syntax: CONSTRAINT FK_tables_attribute FOREIGN KEY (attribute name on this table)
 --			REFERENCES parenttablename (primary key attribute)
 
+-- Place check constraints on the money attributes
+-- the domain of the accept values is 0 or positive value
+-- if a constraint test is only against the attribute then
+--		the constraint can be code (and usually is) on the
+--		declaration of the attribute
+-- OTHERWISE you must create a table level constraint
+
 CREATE TABLE Orders (
 	OrderNumber	int IDENTITY(5,5) not null
 		CONSTRAINT PK_Orders_OrderNumber primary key clustered,
 	OrderDate	smalldatetime	not null,
 	CustomerNumber	int			not null
-		CONSTRAINT FK_OrdersCustomers FOREIGN KEY (CustomerNumber)
+		CONSTRAINT FK_OrdersCustomers_CustomerNumber FOREIGN KEY (CustomerNumber)
 			REFERENCES Customers (CustomerNumber),
-	Subtotal		money		not null,
-	GST				money		not null,
+	Subtotal		money		not null
+		CONSTRAINT CK_Orders_Subtotal CHECK (Subtotal >= 0),
+	GST				money		not null
+		CONSTRAINT CK_Orders_GST CHECK (GST >= 0),
 	Total			money		not null
+		CONSTRAINT CK_Orders_Total CHECK (Total >= 0)
 )
 
 -- IMPORTANT!!!!!
@@ -121,6 +135,10 @@ CREATE TABLE Items (
 -- IMPORTANT !!!!!!!!!!!!!!
 -- any table that has a foreign key constraint MUST be declare AFTER the "parent" table with the primary key
 
+-- the Amount value must be equal to the Price * Quantity
+-- since there are multiple different attributes within this
+--		constraint, the constraint must be coded at the table
+--		level
 CREATE TABLE ItemsOnOrder (
 	OrderNumber		int			not null
 		CONSTRAINT FK_ItemsOnOrderOrders_OrderNumber FOREIGN KEY (OrderNumber)
@@ -131,7 +149,9 @@ CREATE TABLE ItemsOnOrder (
 	Quantity		int			not null,
 	Price			money		not null,
 	Amount			money		not null,
-	CONSTRAINT PK_ItemsOnOrder_OrderNumberItemNumber primary key clustered (OrderNumber, ItemNumber) 
+	CONSTRAINT PK_ItemsOnOrder_OrderNumberItemNumber primary key clustered (OrderNumber, ItemNumber),
+	CONSTRAINT CK_ItemsOnOrder_AmountQuantityPrice 
+		CHECK (Amount = Price * Quantity)
 )
 
 
