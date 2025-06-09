@@ -85,6 +85,7 @@ CREATE TABLE Customers (
 	Phone			char(12) null
 )
 
+
 -- CustomerNumber is a foreign key associated with the Customer table
 -- The foreign key constraint can be coded with the attribute or at the end of the table
 -- syntax: CONSTRAINT FK_tables_attribute FOREIGN KEY (attribute name on this table)
