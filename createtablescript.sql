@@ -98,10 +98,19 @@ CREATE TABLE Customers (
 --		declaration of the attribute
 -- OTHERWISE you must create a table level constraint
 
+-- place a default constraint on OrderDate such that it will use the current date as a
+--		default value IF NO data value is supplied when the record for the table is created
+
+-- IF you place this constraint at the table level, you need to add: FOR filename 
+
+-- to obtain the current date from the o/s use the special key word: getdate()
+--      CONSTRAINT DF_Orders_OrderDate DEFAULT getdate() FOR OrderDate
+
 CREATE TABLE Orders (
 	OrderNumber	int IDENTITY(5,5) not null
 		CONSTRAINT PK_Orders_OrderNumber primary key clustered,
-	OrderDate	smalldatetime	not null,
+	OrderDate	smalldatetime	not null
+	    CONSTRAINT DF_Orders_OrderDate DEFAULT getdate(),
 	CustomerNumber	int			not null
 		CONSTRAINT FK_OrdersCustomers_CustomerNumber FOREIGN KEY (CustomerNumber)
 			REFERENCES Customers (CustomerNumber),

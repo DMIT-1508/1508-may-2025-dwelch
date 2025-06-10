@@ -1,10 +1,20 @@
+-- the use command will tell the system which database that this follow commands whould be executed in.
+
 use LearningDB
 go
 -- Customers
-INSERT INTO Customers (LastName, FirstName, Phone) VALUES
-('Ujest', 'Shirley','780-123-4567'),
-('Behold', 'Lowand','780-987-7654'),
-('Stew-Dent','Iam','589-384-5647')
+-- loading of data using JUST the create table script
+--INSERT INTO Customers (LastName, FirstName, Phone) VALUES
+--('Ujest', 'Shirley','780-123-4567'),
+--('Behold', 'Lowand','780-987-7654'),
+--('Stew-Dent','Iam','589-384-5647')
+--go
+
+-- loading of data AFTER the execution of ALTER commands
+INSERT INTO Customers (LastName, FirstName, Phone, City, Province) VALUES
+('Ujest', 'Shirley','780-123-4567','Edmonton','AB'),
+('Behold', 'Lowand','780-987-7654','Edmonton','AB'),
+('Stew-Dent','Iam','589-384-5647','Edmonton','AB')
 go
 
 -- Orders
