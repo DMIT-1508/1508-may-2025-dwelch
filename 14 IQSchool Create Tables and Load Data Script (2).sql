@@ -1,5 +1,10 @@
 /* IQSchool Table Creation and Load Data Script */
 
+-- if you do NOT have a IQSchool database, uncomment the following line
+--		and execute
+-- Then comment the create database IQSchool out
+-- create database IQSchool
+
 Use IQSchool
 Go
 
@@ -23,7 +28,7 @@ Create Table Position
 											Primary Key clustered,
 	PositionDescription	varchar(50)		Not Null
 )
-
+go
 
 Create Table Club
 (
@@ -32,7 +37,7 @@ Create Table Club
 											Primary Key clustered,
 	ClubName			varchar(50)		Not Null
 )
-
+go
 
 Create Table Student
 (
@@ -59,7 +64,7 @@ Create Table Student
 										Constraint CK_Student_BalanceOwing_GreaterEqualZero
 											Check (BalanceOwing >= 0)
 )
-
+go
 
 Create Table Course
 (
@@ -81,7 +86,7 @@ Create Table Course
 										Constraint CK_Course_CourseCost_GreaterEqualZero
 											Check (CourseCost >= 0)
 )
-
+go
 
 Create Table Staff
 (
@@ -101,7 +106,7 @@ Create Table Staff
 	Constraint CK_Staff_DateReleased_GreaterThan_DateHired
 		Check (DateReleased > DateHired)
 )
-
+go
 
 Create Table Activity
 (
@@ -114,7 +119,7 @@ Create Table Activity
 	Constraint PK_Activity_StudentID_ClubId
 		Primary Key clustered (StudentID, ClubId)
 )
-
+go
 
 Create Table Semester
 (
@@ -124,7 +129,7 @@ Create Table Semester
 	StartDate			datetime		Not Null,
 	EndDate				datetime		Not Null
 )
-
+go
 
 Create Table Offering
 (
@@ -141,7 +146,7 @@ Create Table Offering
 										Constraint fk_Offering_SemesterCode_To_Semester_SemesterCode
 											References Semester(SemesterCode)
 )
-
+go
 
 Create Table Registration
 (
@@ -161,7 +166,7 @@ Create Table Registration
 	Constraint PK_Registration_OfferingCode_StudentID
 		Primary Key clustered (OfferingCode, StudentID)
 )
-
+go
 
 Create Table PaymentType
 (
@@ -170,7 +175,7 @@ Create Table PaymentType
 											Primary Key clustered,
 	PaymentTypeDescription	varchar(40) Null
 )
-
+go
 
 Create Table Payment
 (
