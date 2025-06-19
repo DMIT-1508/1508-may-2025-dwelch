@@ -102,3 +102,67 @@ SELECT Lastname + ', ' + FirstName, city, BalanceOwing
 FROM Student
 --WHERE City IN ('Edmonton','Calgary','Leduc')
 WHERE City = 'Edmonton' or City = 'Calgary' or city = 'Leduc'
+
+-- LIKE condition
+-- uses what are calling wildcard characters
+-- % any number of characters/numerics
+-- _ any single character/numerics
+-- [ ] where the brackets can contain specific characters/numerics
+-- [  -   ] if a - (dash) is used, it indicates a range
+
+-- the like condition is stated as a string:  'pattern criteria'
+-- the wildcard characters can be use individual or in combinations
+
+--NOTE!!! if you use a like operator WITHOUT any wildcard characters
+--         it is the same as use the = relative operator
+
+-- Find all student cities that have 'ton' in them
+-- cities starting with ton
+SELECT StudentID, FirstName, LastName, City
+FROM Student
+WHERE city like 'ton%'
+
+-- cities ending with ton
+SELECT StudentID, FirstName, LastName, City
+FROM Student
+WHERE city like '%ton'
+
+-- cities with ton as part of its name
+SELECT StudentID, FirstName, LastName, City
+FROM Student
+WHERE city like '%ton'
+
+-- cities with the letter 'a' as part of its name
+SELECT StudentID, FirstName, LastName, City
+FROM Student
+WHERE city like '%a%'
+
+-- find any student that has a first name
+--    with 'a' as the second character
+SELECT StudentID, FirstName, LastName, City
+FROM Student
+WHERE firstname like '_a%'
+
+-- find any student that has a first name of 3 characters
+--    with 'a' as the second character
+SELECT StudentID, FirstName, LastName, City
+FROM Student
+WHERE firstname like '_a_'
+
+-- find any student from Edmonton (T5 or T6) via their postal code
+SELECT StudentID, FirstName, LastName, City , PostalCode
+FROM Student
+WHERE PostalCode like 'T[56]%'
+
+-- find any student from a postalcode with 5 or 6 as their second digit
+SELECT StudentID, FirstName, LastName, City , PostalCode
+FROM Student
+WHERE PostalCode like '_[56]%'
+
+-- like can be used on table constraints
+-- check that any postal code data matchs the pattern of the 
+--     Canadian postal code AnAnAn
+
+  Constraint CK_Student_PostalCode 
+        CHECK (PostalCode like '[a-z][0-9][a-z][0-9][a-z][0-9]')
+

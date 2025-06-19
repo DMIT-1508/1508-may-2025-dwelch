@@ -73,3 +73,37 @@ FROM Staff
 WHERE PositionID NOT IN (1,2,3)
 go
 
+-- Select the studentID's, Offering Code and mark from the Registrations
+-- where the Mark is between 70 and 80 and
+-- the OfferingCode is 1001 or 1009
+
+--here we are using both between and relative operator
+--   in a compound condition
+--NOTE: you may have to encapsulate part of your condition
+--      within (...) to isolate the proper interpretation
+--      of the condition
+SELECT studentid, offeringcode, mark
+FROM Registration
+WHERE Mark between 70 and 80
+   and (OfferingCode = 1001 or OfferingCode = 1009)
+go
+
+-- Select the students first and last names who have last names 
+-- starting with S
+SELECT FirstName, LastName
+FROM Student
+WHERE LastName like 's%'
+go
+
+-- Select Coursenames whose CourseID have a 1 as the fifth character
+SELECT CourseName
+FROM Course
+WHERE CourseId like '____1%'
+go
+
+-- Select the CourseID's and Coursenames where the CourseName 
+-- contains the word 'programming'
+SELECT CourseID, CourseName
+FROM Course
+WHERE CourseName like '%programming%'
+go
