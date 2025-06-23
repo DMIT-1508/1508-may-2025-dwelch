@@ -30,12 +30,13 @@
 --         when you drop a table, then the order is important, "child" tables (fkey table) MUST be dropped
 --				BEFORE the "parent" table (Pkey table)
 
+use LearningDB
+go
 
-
-DROP TABLE ItemsOnOrder -- child table to Items
-DROP TABLE Items
-DROP TABLE Orders -- child table to Customers
-DROP TABLE Customers
+DROP TABLE IF EXISTS ItemsOnOrder -- child table to Items
+DROP TABLE IF EXISTS Items
+DROP TABLE IF EXISTS Orders -- child table to Customers
+DROP TABLE IF EXISTS Customers
 go
 
 -- Creating a table
@@ -134,7 +135,10 @@ CREATE TABLE Items (
 	ItemNumber		int IDENTITY(1, 1) not null,
 	Description     varchar(100)	not null, 
 	CurrentPrice	money			not null,
-	CONSTRAINT PK_Items_ItemNumber primary key clustered (ItemNumber)
+	CurrentCost		money			not null
+	CONSTRAINT CK_Items_CurrentCost CHECK(CurrentCost >= 0.00),
+	CONSTRAINT PK_Items_ItemNumber primary key clustered (ItemNumber),
+	CONSTRAINT CK_Items_CurrentCostCurrentPrice CHECK(CurrentCost <= CurrentPrice)
 )
 
 -- The primary key for a compound table has its constraint at the end of the table AFTER all attribute.
@@ -159,6 +163,7 @@ CREATE TABLE ItemsOnOrder (
 	Quantity		int			not null,
 	Price			money		not null,
 	Amount			money		not null,
+	Cost            money       not null,
 	CONSTRAINT PK_ItemsOnOrder_OrderNumberItemNumber primary key clustered (OrderNumber, ItemNumber),
 	CONSTRAINT CK_ItemsOnOrder_AmountQuantityPrice 
 		CHECK (Amount = Price * Quantity)
