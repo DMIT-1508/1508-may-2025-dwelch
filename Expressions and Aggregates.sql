@@ -202,7 +202,7 @@ go
 --    then I can compare all the other profits to that highest profit
 
 --Find the order with the highest profit
---knowledge needed: known all the the profits (expression) by order
+--knowledge needed: known all the profits (expression) by order
 --examine this data and determine the highest profit
 --Now, use the highest profit in comparing to all groups on the having clause
 
