@@ -84,7 +84,7 @@ CREATE TRIGGER TR_Agent_Update
 ON Agent
 FOR Update
 AS
-BEGIN
+--BEGIN
 	IF @@rowcount > 0 and update(agentfee)
 	BEGIN
 		IF exists (SELECT *
@@ -96,7 +96,7 @@ BEGIN
 			RAISERROR('Agent fee increase is too much',16,1)
 		END
 	END
-END
+--END
 RETURN
 
 go
@@ -105,9 +105,13 @@ CREATE TRIGGER TR_MovieCharacter_Delete
 ON MovieCharacter
 FOR DELETE
 AS
-BEGIN
+--BEGIN
 	IF @@rowcount > 0 
 	BEGIN
+	--the deleted table has the same structure and definition as the MovieCharacter table
+	--the deleted table has any records that were removed from the MovieCharacter table
+	--the relationship between MovieCharacter and Agent is on the AgentID
+	--the deleted table hasthe agentid value of the deleted record(s)
 		IF exists (SELECT *
 					FROM deleted inner join Agent
 						on deleted.AgentID = Agent.AgentID
@@ -117,7 +121,7 @@ BEGIN
 			RAISERROR('Agent makes too much. Cannot delete movie character',16,1)
 		END
 	END
-END
+--END
 RETURN
 go
 
@@ -126,9 +130,14 @@ CREATE TRIGGER TR_MovieAgent_Insert_Update_A
 ON MovieCharacter
 FOR Insert,Update
 AS
-BEGIN
+
 	IF @@rowcount > 0 and update(agentid)
 	BEGIN
+	--remember the dml action has already taken place
+	--any changes to the database has already taken place
+	--that means the "real" table has the new data in it
+
+	--this test checks all agents and all characters
 		IF exists (SELECT *
 					FROM MovieCharacter
 					GROUP BY MovieCharacter.AgentID
@@ -138,7 +147,7 @@ BEGIN
 			RAISERROR('Agent cannot represent more than 2 movie characters',16,1)
 		END
 	END
-END
+
 RETURN
 go
 
