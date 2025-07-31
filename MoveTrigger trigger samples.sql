@@ -2,6 +2,10 @@ use MovieTriggers
 go
 
 DROP TRIGGER IF EXISTS TR_MovieCharacter_Insert_Update
+DROP TRIGGER IF EXISTS TR_Agent_Update
+DROP TRIGGER IF EXISTS TR_MovieCharacter_Delete
+DROP TRIGGER IF EXISTS TR_MovieAgent_Insert_Update_A
+DROP TRIGGER IF EXISTS TR_MovieAgent_Insert_Update_B
 go
 
 CREATE TRIGGER TR_MovieCharacter_Insert_Update
@@ -74,4 +78,90 @@ Update MovieCharacter
 SET Characterwage = -150.00
 where CharacterName = 'Don Welch'
 SELECT * From MovieCharacter
+go
+
+CREATE TRIGGER TR_Agent_Update
+ON Agent
+FOR Update
+AS
+BEGIN
+	IF @@rowcount > 0 and update(agentfee)
+	BEGIN
+		IF exists (SELECT *
+					FROM inserted inner join deleted
+						on inserted.AgentID = deleted.AgentID
+					WHERE inserted.AgentFee > 2 * deleted.AgentFee)
+		BEGIN
+			ROLLBACK TRANSACTION
+			RAISERROR('Agent fee increase is too much',16,1)
+		END
+	END
+END
+RETURN
+
+go
+
+CREATE TRIGGER TR_MovieCharacter_Delete
+ON MovieCharacter
+FOR DELETE
+AS
+BEGIN
+	IF @@rowcount > 0 
+	BEGIN
+		IF exists (SELECT *
+					FROM deleted inner join Agent
+						on deleted.AgentID = Agent.AgentID
+					WHERE Agent.AgentFee >= 50)
+		BEGIN
+			ROLLBACK TRANSACTION
+			RAISERROR('Agent makes too much. Cannot delete movie character',16,1)
+		END
+	END
+END
+RETURN
+go
+
+--check all agents and movie characters
+CREATE TRIGGER TR_MovieAgent_Insert_Update_A
+ON MovieCharacter
+FOR Insert,Update
+AS
+BEGIN
+	IF @@rowcount > 0 and update(agentid)
+	BEGIN
+		IF exists (SELECT *
+					FROM MovieCharacter
+					GROUP BY MovieCharacter.AgentID
+					HAVING count(*) > 2)
+		BEGIN
+			ROLLBACK TRANSACTION
+			RAISERROR('Agent cannot represent more than 2 movie characters',16,1)
+		END
+	END
+END
+RETURN
+go
+
+--OR
+
+--check only movie characters and their agents inserted or updated
+CREATE TRIGGER TR_MovieAgent_Insert_Update_B
+ON MovieCharacter
+FOR Insert,Update
+AS
+BEGIN
+	IF @@rowcount > 0 and update(agentid)
+	BEGIN
+		IF exists (SELECT *
+					FROM MovieCharacter inner join Inserted
+						on MovieCharacter.agentid = inserted.AgentID
+					GROUP BY MovieCharacter.AgentID
+					HAVING count(*) > 2)
+		BEGIN
+			ROLLBACK TRANSACTION
+			RAISERROR('Agent cannot represent more than 2 movie characters',16,1)
+		END
+	END
+END
+RETURN
 go
